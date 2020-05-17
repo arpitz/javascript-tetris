@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const width = 10;
   let nextRandom = 0;
   let timerId;
+  let score = 0;
 
   //The Tetrominoes
   const lTetromino = [
@@ -105,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentPosition = 4;
       draw();
       displayShape();
+      addScore();
     }
   }
 
@@ -185,4 +187,25 @@ document.addEventListener("DOMContentLoaded", () => {
       displayShape();
     }
   })
+
+  // functionality for calculating score
+  function addScore() {
+    for(let i = 0; i < 199; i += width) {
+      const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9];
+
+      // check if all the divs in the row have been filled
+      if(row.every(index => squares[index].classList.contains('taken'))) {
+        score += 10;
+        scoreDisplay.innerHTML = score;
+        // remove that row from game to get the game keep moving
+        row.forEach(index => {
+          squares[index].classList.remove('taken');
+          squares[index].classList.remove('tetromino');
+        });
+        const squaresRemoved = squares.splice(i, width);
+        squares = squaresRemoved.concat(squares);
+        squares.forEach(cell => grid.appendChild(cell));
+      }
+    }
+  }
 })
